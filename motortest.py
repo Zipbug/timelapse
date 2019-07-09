@@ -1,5 +1,25 @@
-import RPi.GPIO as GPIO          
+from bluetooth import *
+import RPi.GPIO as GPIO
 import time
+
+
+server_sock=BluetoothSocket( RFCOMM )
+server_sock.bind(("",PORT_ANY))
+server_sock.listen(1)
+uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
+port = server_sock.getsockname()[1]
+
+advertise_service( server_sock, "BTS",
+                   service_id = uuid,
+                   service_classes = [ uuid, SERIAL_PORT_CLASS ],
+                   profiles = [ SERIAL_PORT_PROFILE ],
+                    )
+
+print("Waiting for connection on RFCOMM channel %d" % port)
+
+client_sock, client_info = server_sock.accept()
+print("Accepted connection from ", client_info)
+
 
 in1 = 26
 in2 = 20
@@ -19,12 +39,12 @@ GPIO.output(in4,GPIO.HIGH)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
-print("\n")    
+print("\n")
 
 while(1):
 
-    x=raw_input()
-    
+    x=client_sock.recv(1024)
+
     if x=='r':
         print("run")
         if(temp1==1):
@@ -37,7 +57,6 @@ while(1):
          GPIO.output(in2,GPIO.HIGH)
          print("backward")
          x='z'
-
 
     elif x=='s':
         print("stop")
@@ -58,7 +77,7 @@ while(1):
         GPIO.output(in2,GPIO.HIGH)
         temp1=0
         x='z'
-    
+
     elif x=='p':
         print("focusing")
         GPIO.output(in3,GPIO.LOW)
@@ -68,11 +87,17 @@ while(1):
         time.sleep(.5)
         GPIO.output(in3,GPIO.HIGH)
         GPIO.output(in4,GPIO.HIGH)
-    
+
     elif x=='e':
         GPIO.cleanup()
         break
-    
+
     else:
         print("<<<  wrong data  >>>")
         print("please enter the defined data to continue.....")
+
+print("Disconnected")
+
+client_sock.close()
+server_sock.close()
+print("All Closed")
