@@ -170,6 +170,7 @@ public class FullscreenActivity extends AppCompatActivity {
                      @Override
                      public void run() {
                          // Update here your User Interface
+                         mTextViewStatus.setText(message);
                      }
                  });
             }
@@ -245,8 +246,8 @@ public class FullscreenActivity extends AppCompatActivity {
     public void onButtonClick(View view) {
         if (mBluetooth.isConnected()) {
             //Switch the value of the led
-            mBluetooth.SendMessage("r");
-            led = !led;
+            //string format === 't,direction = f || d, motorTime, picDelay, motorDuration'
+            mBluetooth.SendMessage("t,f,6000,3000,3000");
         }
     }
 }
