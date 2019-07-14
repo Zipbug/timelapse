@@ -32,10 +32,10 @@ temp1=1
 
 motorTime = 0
 motorDuration = 0
-moving = false
+running = false
 picDelay = 0
-lastPic = 0
-lastMove = 0
+lastPic = datetime.now().timestamp()
+lastMove = datetime.now().timestamp()
 direction = 'f'
 
 GPIO.setmode(GPIO.BCM)
@@ -71,20 +71,27 @@ class perpetualTimer():
       self.thread.cancel()
 
 def timeEvent():
-    move = floor((datetime.now().timestamp() - float(lastMove)) / 60)
-    pic = floor((datetime.now().timestamp() - float(lastPic)) / 60)
-    if move >= motorTime:
-        print('motorDuration' + motorTime)
-        print('motorDuration' + motorDuration)
+    global lastMove, lastPic, motorTime, MotorDuration , direction, running
+    
+    if !running:
+        return null    
+
+    move = floor((datetime.now().timestamp() - float(lastMove)))
+    pic = floor((datetime.now().timestamp() - float(lastPic)))
+    print('move' + str(move))
+    print('pic' + str(pic))
+    if move >= motorTime :
+        print('motorDuration' + str(motorTime))
+        print('motorDuration' + str(motorDuration))
         if direction == 'f':
             forward()
         else:
             backward()
-        if move >= move + motorDuration:
-            print('update last move' + move)
-            lastMove = move
+        if move >= motorTime + motorDuration:
+            print('update last move' + str(move))
+            lastMove = datetime.now().timestamp()
     if pic >= picDelay:
-        lastPic = pic
+        lastPic = datetime.now().timestamp()
         takePicture()
 
 def forward():
@@ -111,9 +118,11 @@ def takePicture():
 
 while(1):
 
-    x=client_sock.recv(1024)
+    x=client_sock.recv(64)
+    x=x.decode('utf-8')
+    print(x) 
 
-    if x=='r':
+    if x[0]=='r':
         print("run")
         if(temp1==1):
          GPIO.output(in1,GPIO.HIGH)
@@ -126,31 +135,36 @@ while(1):
          print("backward")
          x='z'
 
-    elif x=='s':
+    elif x[0]=='s':
         print("stop")
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.LOW)
+        running = false
         x='z'
 
-    elif x=='f':
+    elif x[0]=='f':
         print("forward")
+        client_sock.send("forward")
         GPIO.output(in1,GPIO.HIGH)
         GPIO.output(in2,GPIO.LOW)
         temp1=1
         x='z'
 
-    elif x=='b':
+    elif x[0]=='b':
         print("backward")
+        client_sock.send("backward")
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.HIGH)
         temp1=0
         x='z'
 
-    elif x=='p':
+    elif x[0]=='p':
         print("focusing")
+        client_sock.send("focusing")
         GPIO.output(in3,GPIO.LOW)
         time.sleep(.5)
         print("taking picture")
+        client_sock.send("taking picture")
         GPIO.output(in4,GPIO.LOW)
         time.sleep(.5)
         GPIO.output(in3,GPIO.HIGH)
@@ -158,13 +172,13 @@ while(1):
     # string format === 't,direction = f || d, motorTime, picDelay, motorDuration'
     elif x[0]=='t':
         print('Run Full Gammut')
-        letters = x.split(',');
-        digits =  [x for x in letters if type(x)==int ]
+        letters = x.split(',')
         direction = letters[1]
-        motorTime = digits[0]
-        picDelay = digits[1]
-        motorDuration = digits[2]
-        screen_update_timer = perpetualTimer(5, timeEvent)
+        motorTime = int(letters[2])
+        picDelay = int(letters[3])
+        motorDuration = int(letters[4])
+        running = true
+        screen_update_timer = perpetualTimer(1, timeEvent)
         screen_update_timer.start()
         x = 'z'
     elif x=='e':
@@ -172,6 +186,7 @@ while(1):
         break
 
     else:
+        print(type(x))
         print("<<<  wrong data  >>>")
         print("please enter the defined data to continue.....")
 
