@@ -6,13 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
+
 import android.view.View;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.pm.ActivityInfo;
 import android.bluetooth.BluetoothDevice;
-import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
@@ -23,16 +25,14 @@ import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 public class FullscreenActivity extends AppCompatActivity {
   BluetoothAdapter mBluetoothAdapter = null;
   BluetoothHelper mBluetooth = new BluetoothHelper();
-  private SeekBar mSeekBar;
   private TextView mTextViewStatus;
   private TextView responseText;
-  boolean led = false;                              // The status of the ON/OFF led
-  private String DEVICE_NAME = "lapsePi";           // The name of the remote device
+  private String DEVICE_NAME = "raspberrypi";           // The name of the remote device
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
      */
-    private static final boolean AUTO_HIDE = true;
+    private static final boolean AUTO_HIDE = false;
 
     /**
      * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
@@ -106,7 +106,6 @@ public class FullscreenActivity extends AppCompatActivity {
 
         mTextViewStatus = (TextView) findViewById(R.id.ID_STATUSTEXT);
         responseText = (TextView) findViewById(R.id.ResponseText);
-        mSeekBar = (SeekBar) findViewById(R.id.ID_SEEKBAR);
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
@@ -121,11 +120,6 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
-
         // Check if Bluetooth is supported by the device
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
@@ -137,40 +131,19 @@ public class FullscreenActivity extends AppCompatActivity {
         mTextViewStatus.setText("Connecting to " + DEVICE_NAME);
         mBluetooth.Connect(DEVICE_NAME);
 
-        // Setup listener for SeekBar:
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (mBluetooth.isConnected()) {
-                    // Write the new value to Bluetooth (The String is something like "$PWM,128")
-                    mBluetooth.SendMessage("$PWM," + seekBar.getProgress());
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // Not used in this demo app
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                if (mBluetooth.isConnected()) {
-                    // Write the new value to Bluetooth
-                    mBluetooth.SendMessage("$PWM," + seekBar.getProgress());
-                }
-            }
-        });
 
         // Setup listener for Bluetooth helper;
         mBluetooth.setBluetoothHelperListener(new BluetoothHelper.BluetoothHelperListener() {
             @Override
             public void onBluetoothHelperMessageReceived(BluetoothHelper bluetoothhelper, String message) {
                 // Do your stuff with the message received !!!
+                final String rMessage = message;
+                mTextViewStatus.setText(rMessage);
                 runOnUiThread(new Runnable() {
                      @Override
                      public void run() {
                          // Update here your User Interface
-                         mTextViewStatus.setText(message);
+                         mTextViewStatus.setText("message");
                      }
                  });
             }
@@ -241,13 +214,43 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    public void onForwardClick(View view) {
+        if (mBluetooth.isConnected()) {
+            mBluetooth.SendMessage("f");
+        }
+    }
 
+    public void onBackwardClick(View view) {
+        if (mBluetooth.isConnected()) {
+            mBluetooth.SendMessage("b");
+        }
+    }
+
+    public void onTakeClick(View view) {
+        if (mBluetooth.isConnected()) {
+            mBluetooth.SendMessage("p");
+        }
+    }
+    public void onStopClick(View view) {
+        if (mBluetooth.isConnected()) {
+          mBluetooth.SendMessage("s");
+        }
+    }
     // The event fired when you click the button
     public void onButtonClick(View view) {
         if (mBluetooth.isConnected()) {
-            //Switch the value of the led
-            //string format === 't,direction = f || d, motorTime, picDelay, motorDuration'
-            mBluetooth.SendMessage("t,f,6000,3000,3000");
+          EditText motorInput = (EditText)findViewById(R.id.motor);
+          EditText travelInput = (EditText)findViewById(R.id.travel);
+          EditText pictureInput = (EditText)findViewById(R.id.picture);
+          Spinner travelDirectionInput = (Spinner) findViewById(R.id.travelDirection);
+          String travelDirection = String.valueOf(travelDirectionInput.getSelectedItem());
+          if(travelDirection.equals("Forward")){
+            travelDirection = "f";
+          }else{
+            travelDirection = "b";
+          }
+          //string format === 't,direction = f || b, motorTime, picDelay, motorDuration'
+          mBluetooth.SendMessage("t,"+ travelDirection +","+ motorInput.getText().toString()+","+pictureInput.getText().toString()+","+travelInput.getText().toString());
         }
     }
 }

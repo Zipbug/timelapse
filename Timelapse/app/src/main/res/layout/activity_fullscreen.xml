@@ -5,21 +5,102 @@
     android:layout_height="match_parent"
     android:background="#0099cc"
     tools:context=".FullscreenActivity">
-
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <TextView
-        android:id="@+id/fullscreen_content"
+    <LinearLayout
+        android:id="@+id/layoutContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="fill_parent"
         android:gravity="center"
         android:keepScreenOn="true"
-        android:text="@string/dummy_content"
-        android:textColor="#33b5e5"
-        android:textSize="50sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:padding="20sp">
+        <Button
+          android:id="@+id/fullscreen_content"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Toggle Full Screen"
+          android:textSize="20sp"
+          android:textStyle="bold" />
+        <TextView
+          android:id="@+id/ID_STATUSTEXT"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text=""
+          android:textSize="20sp"
+          android:textStyle="bold" />
+        <TextView
+          android:id="@+id/ResponseText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text=""
+          android:textSize="20sp"
+          android:textStyle="bold" />
+        <TextView
+          android:id="@+id/motorText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/motor"
+          android:textSize="20sp"
+          android:textStyle="bold" />
+        <EditText
+          android:id="@+id/motor"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          android:inputType="number"/>
+        <TextView
+          android:id="@+id/travelText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/travel"
+          android:textSize="20sp"
+          android:textStyle="bold" />
+        <EditText
+          android:id="@+id/travel"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          android:inputType="number"/>=
+        <TextView
+          android:id="@+id/pictureText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/picture"
+          android:textSize="20sp"
+          android:textStyle="bold" />
+        <EditText
+         android:id="@+id/picture"
+         android:layout_height="wrap_content"
+         android:layout_width="match_parent"
+         android:inputType="number"/>
+       <TextView
+         android:id="@+id/travelPrompt"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="@string/travelPrompt"
+         android:textSize="20sp"
+         android:textStyle="bold" />
+       <Spinner
+         android:id="@+id/travelDirection"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginVertical="10sp"
+         android:entries="@array/travelDirection"
+         android:prompt="@string/travelPrompt"/>
 
+      <Button
+        android:id="@+id/start"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start"
+        android:onClick="onButtonClick" />
+      <Button
+        android:id="@+id/stop"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/stop"
+        android:onClick="onStopClick" />
+    </LinearLayout>
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
     <FrameLayout
@@ -29,77 +110,37 @@
 
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:background="@color/black_overlay"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             tools:ignore="UselessParent">
 
-            <LinearLayout
-                android:orientation="vertical"
+            <Button
+                android:id="@+id/forward"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/linearLayout">
-
-                <Button
-                    android:layout_width="fill_parent"
-                    android:layout_height="80dp"
-                    android:text="LED"
-                    android:id="@+id/ID_LEDBUTTON"
-                    android:layout_gravity="center_horizontal"
-                    android:onClick="onButtonClick" />
-                    <Button
-                        android:id="@+id/dummy_button"
-                        android:layout_width="fill_parent"
-                        android:layout_height="80dp"
-                        android:layout_weight="1"
-                        android:layout_gravity="center_horizontal"
-                        android:text="@string/dummy_button" />
-
-                <SeekBar
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/ID_SEEKBAR"
-                    android:layout_gravity="center_horizontal"
-                    android:paddingTop="25dp"
-                    android:paddingBottom="25dp"
-                    android:max="255"
-                    android:progress="0" />
-            </LinearLayout>
-            <TextView
+                android:text="@string/forward"
+                android:onClick="onForwardClick" />
+            <Button
+                android:id="@+id/backward"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text=""
-                android:id="@+id/ResponseText"
-                android:layout_below="@+id/linearLayout"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentEnd="false"
-                android:enabled="true"
-                android:layout_margin="5dp"
-                android:gravity="bottom|center"
-                android:padding="10dp"
-                android:layout_alignParentBottom="true" />
-            <TextView
+                android:text="@string/backward"
+                android:onClick="onBackwardClick" />
+            <Button
+              android:id="@+id/stop2"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/stop"
+              android:onClick="onStopClick" />
+            <Button
+                android:id="@+id/take"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Disconnected"
-                android:id="@+id/ID_STATUSTEXT"
-                android:layout_below="@+id/linearLayout"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentEnd="false"
-                android:enabled="true"
-                android:layout_margin="5dp"
-                android:gravity="bottom|center"
-                android:padding="10dp"
-                android:layout_alignParentBottom="true" />
-
-
+                android:text="@string/take"
+                android:onClick="onTakeClick" />
 
         </LinearLayout>
     </FrameLayout>

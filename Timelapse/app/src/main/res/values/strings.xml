@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">Timelapse</string>
 
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="forward">Travel Forward</string>
+    <string name="backward">Travel Backward</string>
+    <string name="take">Take Picture</string>
+    <string name="motor">Time Between Movement</string>
+    <string name="travel">How Long to Move</string>
+    <string name="picture">Time Between Pictures</string>
+    <string name="travelPrompt">Direction the camera should move</string>
+    <string-array name="travelDirection">
+        <item>Forward</item>
+        <item>Backward</item>
+    </string-array>
+
 </resources>
