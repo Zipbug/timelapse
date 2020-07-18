@@ -57,15 +57,15 @@ while(1):
             time.sleep(.5)
             GPIO.output(in3,GPIO.HIGH)
             GPIO.output(in4,GPIO.HIGH)
-        mvinterval = input("Number of Pictures")
-        mvduration = input("Motor on Duration (in seconds)")
-        mvdirection = raw_input("(f)orward or (b)ackward")
+        mvinterval = input("Number of Pictures: ")
+        mvduration = input("Motor on Duration (in seconds): ")
+        mvdirection = raw_input("(f)orward or (b)ackward: ")
         print("Starting Program")
         for i in range(mvinterval):
             if mvdirection =='f':
-                time.sleep(0.5)
+                time.sleep(1)
                 take_picture()
-                time.sleep(0.5)
+                time.sleep(1)
                 GPIO.output(in1,GPIO.HIGH)
                 GPIO.output(in2,GPIO.LOW)
                 temp1=1
@@ -82,6 +82,8 @@ while(1):
                 time.sleep(mvduration)
                 GPIO.output(in1,GPIO.LOW)
                 GPIO.output(in2,GPIO.LOW)
+        x='z'
+        
     if x=='r':
         print("run")
         if(temp1==1):
