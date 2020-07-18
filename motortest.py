@@ -51,14 +51,26 @@ while(1):
         def take_picture():
             print("focusing")
             GPIO.output(in3,GPIO.LOW)
-            time.sleep(.5)
+            time.sleep(.75)
             print("taking picture")
             GPIO.output(in4,GPIO.LOW)
-            time.sleep(.5)
+            time.sleep(.75)
             GPIO.output(in3,GPIO.HIGH)
             GPIO.output(in4,GPIO.HIGH)
+        def move_forward():
+            GPIO.output(in1,GPIO.HIGH)
+            GPIO.output(in2,GPIO.LOW)
+            temp1=1
+        def move_backward():
+            GPIO.output(in1,GPIO.LOW)
+            GPIO.output(in2,GPIO.HIGH)
+            temp1=0
+        def stop():
+            GPIO.output(in1,GPIO.LOW)
+            GPIO.output(in2,GPIO.LOW)
         mvinterval = input("Number of Pictures: ")
         mvduration = input("Motor on Duration (in seconds): ")
+        mvpause = input("Pause Between Pictures: ")
         mvdirection = raw_input("(f)orward or (b)ackward: ")
         print("Starting Program")
         for i in range(mvinterval):
@@ -66,22 +78,18 @@ while(1):
                 time.sleep(1)
                 take_picture()
                 time.sleep(1)
-                GPIO.output(in1,GPIO.HIGH)
-                GPIO.output(in2,GPIO.LOW)
-                temp1=1
+                move_forward()
                 time.sleep(mvduration)
-                GPIO.output(in1,GPIO.LOW)
-                GPIO.output(in2,GPIO.LOW)
+                stop()
+                time.sleep(mvpause)
             if mvdirection =='b':
-                time.sleep(0.5)
+                time.sleep(1)
                 take_picture()
-                time.sleep(0.5)
-                GPIO.output(in1,GPIO.LOW)
-                GPIO.output(in2,GPIO.HIGH)
-                temp1=0
+                time.sleep(1)
+                move_backward()
                 time.sleep(mvduration)
-                GPIO.output(in1,GPIO.LOW)
-                GPIO.output(in2,GPIO.LOW)
+                stop()
+                time.sleep(mvpause)
         x='s'
 
     if x=='r':
