@@ -59,7 +59,7 @@ while(1):
             GPIO.output(in4,GPIO.HIGH)
         mvinterval = input("Number of Pictures")
         mvduration = input("Motor on Duration (in seconds)")
-        mvdirection = input("(f)orward or (b)ackward")
+        mvdirection = raw_input("(f)orward or (b)ackward")
         print("Starting Program")
         for i in range(mvinterval):
             if mvdirection =='f':
