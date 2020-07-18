@@ -82,8 +82,8 @@ while(1):
                 time.sleep(mvduration)
                 GPIO.output(in1,GPIO.LOW)
                 GPIO.output(in2,GPIO.LOW)
-        x='z'
-        
+        x='s'
+
     if x=='r':
         print("run")
         if(temp1==1):
