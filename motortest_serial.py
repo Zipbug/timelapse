@@ -3,12 +3,12 @@ import time
 import bluetooth
 
 # Allow Bluetooth Connection
-#server_sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM ) 
-#port = 1
-#server_sock.bind(("",port)) 
-#server_sock.listen(1) 
-#client_sock,address = server_sock.accept() 
-#print("Accepted connection from ",address)
+server_sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM ) 
+port = 1
+server_sock.bind(("",port)) 
+server_sock.listen(1) 
+client_sock,address = server_sock.accept() 
+print("Accepted connection from ",address)
 
 #while True:
 #    recvdata = client_sock.recv(1024) 
@@ -43,8 +43,7 @@ print("\n")
 
 while(1):
 
-    #x=client_sock.recv(1024)
-    x=raw_input()
+    x=client_sock.recv(1024)
     
     if x=='r':
         print("run")
@@ -98,5 +97,5 @@ while(1):
         print("<<<  wrong data  >>>")
         print("please enter the defined data to continue.....")
 
-#client_sock.close()
-#server.sock.close()
+client_sock.close()
+server.sock.close()
